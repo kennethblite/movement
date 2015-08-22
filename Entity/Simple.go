@@ -3,12 +3,13 @@ package Entity
 import(
 	"azul3d.org/gfx.v1"
 	"image"
+	"azul3d.org/keyboard.v1"
 )
 
 type Simple struct {
 id string
 shape image.Rectangle
-color gfx.Color 
+color gfx.Color
 }
 
 func NewSimple(id string,shape image.Rectangle, color gfx.Color)*Simple{
@@ -29,6 +30,14 @@ Simple
 
 func NewPlayerSimple(id string,shape image.Rectangle, color gfx.Color)*PlayerSimple{
 	return &PlayerSimple{Simple{id, shape, color}}
+}
+
+func (s *PlayerSimple) ProcessKey(key keyboard.TypedEvent){
+	switch key.Rune{
+		case 'd':
+			s.MoveRight()
+		default:
+	}
 }
 
 func (s *PlayerSimple)MoveRight(){

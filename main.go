@@ -8,7 +8,7 @@ package main
 import (
 	"azul3d.org/gfx.v1"
 	"azul3d.org/gfx/window.v2"
-	_"azul3d.org/keyboard.v1"
+	"azul3d.org/keyboard.v1"
 	_"azul3d.org/mouse.v1"
 	"fmt"
 	"image"
@@ -18,11 +18,12 @@ import (
 )
 
 var RenderEntity map[string]Entity.Entity = make(map[string]Entity.Entity)
-var keylistener Listener.KeyboardListener  =  NewKeyListener() 
+var keylistener  *Listener.KeyboardListener =  Listener.NewKeyListener() 
 // gfxLoop is responsible for drawing things to the window.
 func gfxLoop(w window.Window, r gfx.Renderer) {
 	x := Entity.NewPlayerSimple("hello", image.Rect(0, 0, 100, 100), gfx.Color{1, 0, 0, 1})
 	RegisterForRender(x)
+	keylistener.Register(x)
 	// You can handle window events in a seperate goroutine!
 	go func() {
 		// Create our events channel with sufficient buffer size.
@@ -33,6 +34,11 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 
 		// Wait for events.
 		for event := range events {
+			switch ev := event.(type){
+				case keyboard.TypedEvent:
+					keylistener.ProcessKey(ev)
+				default:
+			}
 			// Use reflection to print the type of event:
 			fmt.Println("Event type:", reflect.TypeOf(event))
 
