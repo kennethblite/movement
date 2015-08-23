@@ -25,11 +25,7 @@ func (p PositionListener) Process(){
 	for id, inter := range p.Interactormap{
 		for id2, inter2 := range p.Interactormap{
 			if id != id2{
-				if inter.Priority() > inter2.Priority(){
 					inter.Interact(inter2)
-				}else{
-					inter2.Interact(inter)
-				}
 			}
 		}
 	}

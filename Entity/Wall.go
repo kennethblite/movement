@@ -43,3 +43,6 @@ func boundary_move(f image.Rectangle, other image.Rectangle)image.Point{
 		}
 	}
 }
+
+func (f Wall) Process(){}
+//the wall does not move

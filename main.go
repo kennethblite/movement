@@ -10,9 +10,9 @@ import (
 	"azul3d.org/gfx/window.v2"
 	"azul3d.org/keyboard.v1"
 	_"azul3d.org/mouse.v1"
-	_"fmt"
+	"fmt"
 	"image"
-	_"reflect"
+	"reflect"
 	"movement/Entity"
 	"movement/Listener"
 )
@@ -33,15 +33,16 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 		// Wait for events.
 		for event := range events {
 			switch ev := event.(type){
-				case keyboard.TypedEvent:
+				//case keyboard.TypedEvent:
+				case keyboard.StateEvent:
 					keylistener.ProcessKey(ev)
-				default:
-			}
 			// Use reflection to print the type of event:
-			//fmt.Println("Event type:", reflect.TypeOf(event))
+			fmt.Println("Event type:", reflect.TypeOf(event))
 
 			// Print the event:
-			//fmt.Println(event)
+			fmt.Println(event)
+				default:
+			}
 		}
 	}()
 

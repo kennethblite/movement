@@ -21,7 +21,7 @@ func NewKeyListener()*KeyboardListener{
 	return &KeyboardListener{temp}
 }
 //find the map of the actions to perform for the mentioned key, then do all associated with that key.
-func (k KeyboardListener) ProcessKey( key keyboard.TypedEvent){
+func (k KeyboardListener) ProcessKey( key keyboard.StateEvent){
 	for _, v := range k.Listenermap{
 		v.ProcessKey(key)
 	}
