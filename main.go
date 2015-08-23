@@ -10,20 +10,18 @@ import (
 	"azul3d.org/gfx/window.v2"
 	"azul3d.org/keyboard.v1"
 	_"azul3d.org/mouse.v1"
-	"fmt"
+	_"fmt"
 	"image"
-	"reflect"
+	_"reflect"
 	"movement/Entity"
 	"movement/Listener"
 )
 
 var RenderEntity map[string]Entity.Entity = make(map[string]Entity.Entity)
-var keylistener  *Listener.KeyboardListener =  Listener.NewKeyListener() 
+var keylistener  *Listener.KeyboardListener =  Listener.NewKeyListener()
+var statelistener *Listener.PositionListener = Listener.NewPositionListener() 
 // gfxLoop is responsible for drawing things to the window.
 func gfxLoop(w window.Window, r gfx.Renderer) {
-	x := Entity.NewPlayerSimple("hello", image.Rect(0, 0, 100, 100), gfx.Color{1, 0, 0, 1})
-	RegisterForRender(x)
-	keylistener.Register(x)
 	// You can handle window events in a seperate goroutine!
 	go func() {
 		// Create our events channel with sufficient buffer size.
@@ -40,10 +38,10 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 				default:
 			}
 			// Use reflection to print the type of event:
-			fmt.Println("Event type:", reflect.TypeOf(event))
+			//fmt.Println("Event type:", reflect.TypeOf(event))
 
 			// Print the event:
-			fmt.Println(event)
+			//fmt.Println(event)
 		}
 	}()
 
@@ -63,6 +61,7 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 			r.Clear(image.Rect(100, 100, 200, 200), gfx.Color{0, 0, 1, 1})
 		}
 		*/
+		statelistener.Process()
 		drawAll(r)
 		// Render the whole frame.
 		r.Render()
@@ -84,9 +83,21 @@ func drawAll(r gfx.Renderer){
 	r.Clear(image.Rect(0, 0, 0, 0), gfx.Color{1, 1, 1, 1})
 	for _, v := range RenderEntity{
 	//in this case v.Draw will return both a Rectangle, and a Color
-	r.Clear(v.Draw())
+	r.Clear(v.DrawInfo())
 	}
 }
 func main() {
+	//Registering the Player person
+	x := Entity.NewPlayerSimple("hello", image.Rect(0, 0, 100, 100), gfx.Color{1, 0, 0, 1})
+	RegisterForRender(x)
+	keylistener.Register(x)
+	statelistener.RegisterForState(x)
+
+	flooring := Entity.Wall{Entity.NewSimple("flooring", image.Rect(0,200,400,300), gfx.Color{0,1,0,1})}
+	RegisterForRender(flooring)
+	statelistener.RegisterForState(flooring)
+
+	gravity := Entity.Gravity{Entity.NewSimple("Gravity", image.Rect(0,0,0,0), gfx.Color{1,0,0,0})}
+	statelistener.RegisterForState(gravity)
 	window.Run(gfxLoop, nil)
 }
