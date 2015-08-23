@@ -97,7 +97,7 @@ func main() {
 	RegisterForRender(flooring)
 	statelistener.RegisterForState(flooring)
 
-	gravity := Entity.Gravity{Entity.NewSimple("Gravity", image.Rect(0,0,0,0), gfx.Color{1,0,0,0})}
-	statelistener.RegisterForState(gravity)
-	window.Run(gfxLoop, nil)
+	/*gravity := Entity.Gravity{Entity.NewSimple("Gravity", image.Rect(0,0,0,0), gfx.Color{1,0,0,0})}
+	statelistener.RegisterForState(gravity)*/
+	window.Run(gfxLoop, nil) 
 }
