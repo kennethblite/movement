@@ -3,7 +3,7 @@ package Entity
 import(
 	"azul3d.org/gfx.v1"
 	"image"
-	"azul3d.org/keyboard.v1"
+_	"azul3d.org/keyboard.v1"
 )
 
 type Simple struct {
