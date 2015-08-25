@@ -3,9 +3,9 @@ package Entity
 import()
 
 //Used for anything that contains interactive logic
-//Priority returns which Interact has precedence over the other when comparing two 
+//Interact creates a queue of actions, that are resolved by ProcessInteract
 type Interactor interface{
 	Entity
 	Interact(Interactor)
-	Process()
+	ProcessInteract()
 }

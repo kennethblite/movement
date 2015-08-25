@@ -15,6 +15,8 @@ import (
 	"reflect"
 	"movement/Entity"
 	"movement/Listener"
+	_"time"
+	"sync"
 )
 
 var RenderEntity map[string]Entity.Entity = make(map[string]Entity.Entity)
@@ -23,6 +25,8 @@ var statelistener *Listener.PositionListener = Listener.NewPositionListener()
 // gfxLoop is responsible for drawing things to the window.
 func gfxLoop(w window.Window, r gfx.Renderer) {
 	// You can handle window events in a seperate goroutine!
+	var wg sync.WaitGroup
+	wg.Add(2)
 	go func() {
 		// Create our events channel with sufficient buffer size.
 		events := make(chan window.Event, 256)
@@ -45,7 +49,7 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 			}
 		}
 	}()
-
+	go func(){
 	for {
 		// Clear the entire area (empty rectangle means "the whole area").
 		r.Clear(image.Rect(0, 0, 0, 0), gfx.Color{1, 1, 1, 1})
@@ -67,6 +71,8 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 		// Render the whole frame.
 		r.Render()
 	}
+	}()
+	wg.Wait()
 }
 //allow a shape to be drawn on the screen
 func RegisterForRender(entity Entity.Entity) {

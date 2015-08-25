@@ -20,14 +20,18 @@ type PositionListener struct{
 	Interactormap map[string]Entity.Interactor
 }
 
-//if anything is touching, the higher priority process is given
+//Create a queue of forces between each other, then Process the interactions for each object
 func (p PositionListener) Process(){
+//commenting out for speed testing
 	for id, inter := range p.Interactormap{
 		for id2, inter2 := range p.Interactormap{
 			if id != id2{
 					inter.Interact(inter2)
 			}
 		}
+	}
+	for _, interactors := range p.Interactormap{
+			interactors.ProcessInteract()
 	}
 }
 
