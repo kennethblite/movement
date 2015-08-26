@@ -13,20 +13,17 @@ import (
 	"fmt"
 	"image"
 	"reflect"
-	"movement/Entity"
-	"movement/Listener"
+	"movement/entity"
+	"movement/listener"
 	_"time"
-	"sync"
 )
 
-var RenderEntity map[string]Entity.Entity = make(map[string]Entity.Entity)
-var keylistener  *Listener.KeyboardListener =  Listener.NewKeyListener()
-var statelistener *Listener.PositionListener = Listener.NewPositionListener() 
+var RenderEntity map[string]entity.Entity = make(map[string]entity.Entity)
+var keylistener  *listener.KeyboardListener =  listener.NewKeyListener()
+var statelistener *listener.PositionListener = listener.NewPositionListener() 
 // gfxLoop is responsible for drawing things to the window.
 func gfxLoop(w window.Window, r gfx.Renderer) {
 	// You can handle window events in a seperate goroutine!
-	var wg sync.WaitGroup
-	wg.Add(2)
 	go func() {
 		// Create our events channel with sufficient buffer size.
 		events := make(chan window.Event, 256)
@@ -49,7 +46,6 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 			}
 		}
 	}()
-	go func(){
 	for {
 		// Clear the entire area (empty rectangle means "the whole area").
 		r.Clear(image.Rect(0, 0, 0, 0), gfx.Color{1, 1, 1, 1})
@@ -71,19 +67,17 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 		// Render the whole frame.
 		r.Render()
 	}
-	}()
-	wg.Wait()
 }
 //allow a shape to be drawn on the screen
-func RegisterForRender(entity Entity.Entity) {
+func RegisterForRender(ent entity.Entity) {
 	//only adds to the list if 
-	if _, found := RenderEntity[entity.Id()]; !found {
-		RenderEntity[entity.Id()] = entity
+	if _, found := RenderEntity[ent.Id()]; !found {
+		RenderEntity[ent.Id()] = ent
 	}
 }
 //delete the shape from the render list
-func UnRegisterForRender(entity Entity.Entity) {
-	delete(RenderEntity, entity.Id())
+func UnRegisterForRender(ent entity.Entity) {
+	delete(RenderEntity, ent.Id())
 }
 
 func drawAll(r gfx.Renderer){
@@ -95,16 +89,21 @@ func drawAll(r gfx.Renderer){
 }
 func main() {
 	//Registering the Player person
-	x := Entity.NewPlayerSimple("hello", image.Rect(0, 0, 100, 100), gfx.Color{1, 0, 0, 1})
+	x := entity.NewPlayer("hello", image.Rect(100, 100, 150, 150), gfx.Color{0, 0, 1, 1})
 	RegisterForRender(x)
 	keylistener.Register(x)
 	statelistener.RegisterForState(x)
 
-	flooring := Entity.Wall{Entity.NewSimple("flooring", image.Rect(0,200,400,300), gfx.Color{0,1,0,1})}
+	flooring := entity.Wall{entity.NewSimple("flooring", image.Rect(0,400,800,500), gfx.Color{0,0,0,1})}
 	RegisterForRender(flooring)
 	statelistener.RegisterForState(flooring)
 
-	gravity := Entity.Gravity{Entity.NewSimple("Gravity", image.Rect(0,0,0,0), gfx.Color{1,0,0,0})}
-	statelistener.RegisterForState(gravity)
+	roof := entity.Wall{entity.NewSimple("roof", image.Rect(0,0,800,50), gfx.Color{0,0,0,1})}
+	RegisterForRender(roof)
+	statelistener.RegisterForState(roof)
+
+	enemy := entity.NewEnemyPatrol(entity.NewSimple("enemy",image.Rect(250, 250, 300, 300),gfx.Color{1, 0, 0, 1}), image.Pt(100, 275), image.Pt(400,400))
+	RegisterForRender(enemy)
+	statelistener.RegisterForState(enemy)
 	window.Run(gfxLoop, nil) 
 }
