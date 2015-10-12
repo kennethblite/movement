@@ -1,12 +1,13 @@
 package entity
 
 import (
-	"azul3d.org/gfx.v1"
+2	"azul3d.org/gfx.v1"
 	"azul3d.org/keyboard.v1"
+	"encoding/json"
+	"fmt"
 	"image"
 	"math"
 	"time"
-	"fmt"
 )
 
 type Player struct {
@@ -110,3 +111,13 @@ func (s *Player) Interact(i Interactor) {
 func (s Player) Priority() int {
 	return 50
 }
+
+func (s Player) Velocity() (int, int) {
+	return s.x_vel, s.y_vel
+}
+
+func (s Player) MarshallJSON() ([]byte, error) {
+	return json.Marshal(s)
+}
+
+//see if marshall can go from here because it is private variables
